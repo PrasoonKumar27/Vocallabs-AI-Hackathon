@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { setChaos } from "@/lib/ws";
+import { setChaos } from "../../lib/ws";
 
 // ---------------------------------------------------------------------------
 // Tool definitions with friendly names

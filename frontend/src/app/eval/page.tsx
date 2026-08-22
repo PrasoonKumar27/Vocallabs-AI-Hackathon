@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { runEval, EvalResult } from "@/lib/ws";
+import { runEval, EvalResult } from "../../lib/ws";
 
 export default function EvalPage() {
   const [result, setResult] = useState<EvalResult | null>(null);

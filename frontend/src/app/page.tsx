@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { useTaskEvents, startTask, TaskEvent } from "@/lib/ws";
+import { useTaskEvents, startTask, TaskEvent } from "../lib/ws";
 import {
   StatusBadge,
   StoryStep,
@@ -11,7 +11,7 @@ import {
   CompletionBanner,
   TOOL_LABELS,
   TOOL_DESCRIPTIONS,
-} from "@/components/ui";
+} from "../components/ui";
 
 // ---------------------------------------------------------------------------
 // Friendly fault names
