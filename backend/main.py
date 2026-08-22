@@ -189,6 +189,15 @@ async def get_state():
     return get_aggregate_state()
 
 
+@app.get("/")
+async def root():
+    return {
+        "status": "ok",
+        "service": "ToolFall Resilience Backend",
+        "endpoints": ["/api/health", "/api/state", "/api/task/start", "/ws/task/{task_id}"]
+    }
+
+
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "active_task": _active_task_id}
