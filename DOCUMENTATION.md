@@ -1,84 +1,55 @@
 # ToolFall System Documentation
 
-This document provides a comprehensive technical overview of the ToolFall architecture, state machine, AI model fallbacks, and API interactions.
-
-## 1. System Architecture Overview
-
-ToolFall uses a modern, decoupled architecture:
-- **Frontend (Next.js 14):** A React-based UI that visualizes the state of the AI agent using WebSockets. It includes the Main Task View, the Chaos Console, and the Eval Scoreboard.
-- **Backend (FastAPI):** A high-performance asynchronous Python backend that hosts the agent orchestration loop, the tool mock APIs, the evaluation harness, and the WebSocket server.
-- **Primary AI (Google Gemini):** The primary brain of the agent responsible for planning and executing the multi-step support task.
-- **Secondary AI (Rule-Based / Light Model):** The fallback brain that guarantees the agent never crashes if the primary API fails, times out, or gets rate-limited.
+This document provides a comprehensive technical overview of ToolFall, designed to meet the exact evaluation criteria for the Vocallabs AI Hackathon.
 
 ---
 
-## 2. The Agent State Machine
+## 1. What We Built and How It Works
 
-The core innovation of ToolFall is the strict state machine governing every tool call. Instead of letting the AI blindly call tools, every interaction goes through the `ToolFall Core` resilience layer.
+**What We Built:**
+ToolFall is a resilience layer and orchestration engine for AI agents that use external tools. Most "AI agent" demos and frameworks assume every tool call succeeds. ToolFall assumes the opposite. We built a system that wraps around an agent's tool calls and provides a model-driven circuit breaker that catches failures (server errors, rate limits, latency spikes) and decides in real-time how to recover, ensuring the agent **never crashes**. 
 
-### Tool States
-A tool can be in one of the following states:
-- `HEALTHY`: Normal operation.
-- `DEGRADED`: A failure was detected; the system is applying a backoff/retry strategy.
-- `CIRCUIT_OPEN`: Repeated failures have tripped the circuit breaker.
-- `RECOVERING`: A test call is being made to check if the tool is healthy again.
-- `ESCALATED`: The system has explicitly decided the failure cannot be handled automatically and requires human intervention.
-
-### Failure Classification
-When an error occurs, the system classifies it into one of the following Fault Types:
-1. `ERROR_500`: Standard server crash.
-2. `RATE_LIMIT`: API quota exceeded.
-3. `LATENCY_SPIKE`: Timeout or slow response.
-4. `SILENT_NULL`: An empty response body.
-5. `CORRUPT_PAYLOAD`: Malformed JSON or garbage data.
+**How It Works:**
+The system uses a decoupled architecture:
+- **Backend (FastAPI):** Hosts the orchestration loop, simulated mock APIs, and a WebSocket server. It intercepts every tool call an agent makes. If a mock API throws an error (injected via the UI), the backend pauses the agent and engages the **ToolFall Core**.
+- **ToolFall Core (The Resilience Layer):** It asks the **Primary AI Model (Gemini)** to evaluate the error context and choose a strategy (`RETRY`, `BACKOFF`, `ESCALATE`). 
+- **Dual-Model Failover:** If the Primary Model itself crashes, times out, or fails to parse, control immediately shifts to a **Secondary Rule-Based Model** which takes over the recovery process, preventing a total system crash.
+- **Frontend (Next.js 14):** A beautiful 3D, glassmorphism-styled Chaos Console that visualizes the state machine in real-time. Users can manually inject faults into specific tools and watch the agent adapt.
 
 ---
 
-## 3. The Dual-Model Failover Protocol
+## 2. My Contribution and Work Done
 
-ToolFall is designed to never crash. It achieves this using a **Dual-Model Circuit Breaker**.
+As the lead developer (Prasoon Kumar), I built this entire system from scratch for the hackathon. My contributions spanned the full stack:
 
-### The Primary Model (Gemini)
-When a fault occurs, the orchestration loop pauses and passes the fault context to the Primary Model. The model is prompted to choose a resilience strategy based on the business logic of the specific tool:
-- `RETRY_IMMEDIATE`: For transient errors (e.g., occasional 500s).
-- `RETRY_WITH_BACKOFF`: For rate limits or latency spikes.
-- `SERVE_CACHED`: For non-critical lookup tools.
-- `ESCALATE_TO_HUMAN`: For critical tools (like payments) where guessing is dangerous.
-
-### The Secondary Model (Fallback)
-If the Primary Model itself fails (e.g., Gemini API is down, returns a 503, or times out), the system emits a `model_failover` event. 
-The control flow immediately shifts to the **Secondary Model**. This model uses strict heuristics and lightweight logic to gracefully terminate or escalate the current step without crashing the orchestration loop.
+- **Backend Development:** Engineered the Python FastAPI backend, including the async WebSocket architecture and the custom state machine that governs tool transitions (`HEALTHY`, `DEGRADED`, `CIRCUIT_OPEN`).
+- **AI Integration:** Implemented the dual-model failover logic, ensuring the Primary Gemini model could parse failure context and that the system gracefully degraded to the Secondary model during critical failures.
+- **Frontend Development:** Designed and built the Next.js React frontend from the ground up. I implemented the real-time Chaos Console, narrative event timeline, and advanced CSS 3D/glassmorphism animations.
+- **DevOps & Deployment:** Containerized the backend using Docker, wrote the deployment scripts, and successfully deployed the backend to Railway and the frontend to Vercel.
+- **Evaluation Framework:** Wrote the 22-scenario automated testing harness that proves the system's 100% crash-resistance.
 
 ---
 
-## 4. API Reference
+## 3. Team Roles and Contributions
 
-### REST Endpoints
-- `GET /`: Root endpoint. Returns a basic status message.
-- `GET /health`: Health check endpoint.
-- `POST /task/start`: Initiates a new support task (e.g., rescheduling a booking). Returns a `task_id`.
-- `POST /chaos/config`: Updates the global chaos configuration to inject specific faults into specific tools.
-
-### WebSocket Events (`/ws/{task_id}`)
-The frontend communicates with the backend via WebSockets to receive real-time updates. The UI reacts to the following event types:
-
-1. `tool_call_started`: Emitted when the agent attempts to call a tool.
-2. `fault_detected`: Emitted when a simulated mock API throws a predefined error.
-3. `strategy_chosen`: Emitted when the Primary or Secondary model selects a recovery strategy. Includes the model's reasoning.
-4. `state_transition`: Emitted when a tool's state changes (e.g., `HEALTHY` -> `DEGRADED`).
-5. `model_failover`: Emitted when the Primary model goes down and the Secondary takes over.
-6. `escalated`: Emitted when the task is passed to a human.
-7. `task_completed`: Emitted at the end of the execution loop with success/failure metrics.
+*(Note: This project was developed as a solo submission by Prasoon Kumar. All frontend, backend, AI orchestration, and design work was completed individually.)*
 
 ---
 
-## 5. Evaluation Harness
+## 4. Key Features, Technical Decisions, and Challenges
 
-The project includes an automated evaluation harness located at `/eval`. 
-It runs **22 unique scenarios** designed to break standard LLM agents (e.g., sequential rate limits on booking APIs, followed by corrupt payloads on payment APIs). 
-The scoring evaluates:
-- **Crash Rate:** Did the python process throw an unhandled exception? (Must be 0%).
-- **Logical Escalation:** Did it escalate payments instead of retrying blindly?
-- **Failover Success:** Did the secondary model successfully take over when the primary was simulated to fail?
+### Key Features
+- **🎮 Live Chaos Console:** Real-time injection of 5 distinct failure types (500 Server Errors, Latency Spikes, Corrupt Payloads, Rate Limits, Silent Nulls) into active AI workflows.
+- **🔄 Dual-Model Circuit Breaker:** A seamless failover mechanism from a heavy LLM (Gemini) to a fast, rule-based fallback model.
+- **📊 3D Cinematic UI:** A visually stunning frontend featuring glassmorphism, 3D card tilt effects, and real-time state visualizers designed to make complex agent behavior easy to understand.
+- **🛡️ 100% Crash Resistance:** Achieved a perfect 22/22 pass rate on the evaluation harness by ensuring all unhandled exceptions are caught and routed to the escalation state machine.
 
-*Current Build Status: 22/22 (100%) Scenarios Passed.*
+### Technical Decisions
+- **WebSockets over REST polling:** Chose WebSockets for the frontend-backend communication because the UI needed to instantly react to micro-state changes (like a 500ms latency spike or a fast model failover) without the overhead of HTTP polling.
+- **FastAPI over Flask/Django:** Selected FastAPI for its native `asyncio` support, which was critical for handling parallel API calls, `async` model generation, and concurrent WebSocket connections without blocking the event loop.
+- **Rule-Based Secondary Model:** Decided *not* to use a second LLM (like Claude/OpenAI) for the fallback model. If an API provider is down, network issues might take out multiple providers. A strict, local rule-based heuristic guarantees recovery with 0ms network latency.
+
+### Challenges Faced
+- **Handling Asynchronous State:** One of the hardest challenges was managing the agent's execution loop while waiting for the user to inject faults via the UI. I solved this by decoupling the task runner from the WebSocket broadcaster using Python's `asyncio.Queue` and shared memory state.
+- **Vercel Deployment Constraints:** Vercel's strict routing and build rules conflicted with the monorepo structure. I overcame this by heavily configuring the `next.config.ts`, `vercel.json`, and adjusting all absolute imports to relative imports so the frontend could build in isolation.
+- **Railway Port Binding:** Railway's dynamic `$PORT` injection failed to evaluate correctly in standard Docker `CMD` arrays. I solved this by writing a custom bash entrypoint (`start.sh`) that forces bash evaluation of the environment variables before booting Uvicorn.
