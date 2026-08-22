@@ -269,3 +269,17 @@ logging.basicConfig(
     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
     datefmt="%H:%M:%S",
 )
+
+
+if __name__ == "__main__":
+    import os
+    import uvicorn
+
+    port_str = os.environ.get("PORT", "8000")
+    try:
+        port = int(port_str)
+    except ValueError:
+        port = 8000
+
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=port)
+
