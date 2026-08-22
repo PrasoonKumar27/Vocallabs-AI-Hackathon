@@ -4,6 +4,14 @@ This document provides a comprehensive technical overview of ToolFall, designed 
 
 ---
 
+## 🔗 Project Links & Live Demo
+*   **GitHub Repository:** [https://github.com/PrasoonKumar27/Vocallabs-AI-Hackathon](https://github.com/PrasoonKumar27/Vocallabs-AI-Hackathon)
+*   **Frontend (Interactive 3D Chaos Console):** [https://vocallabs-ai-hackathon-frontend.vercel.app/](https://vocallabs-ai-hackathon-frontend.vercel.app/)
+*   **Backend (FastAPI Engine):** [https://toolfall-backend-production.up.railway.app/](https://toolfall-backend-production.up.railway.app/)
+
+---
+
+
 ## 1. What We Built and How It Works
 
 **What We Built:**
