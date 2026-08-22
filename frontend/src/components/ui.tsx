@@ -66,7 +66,7 @@ export function StatusBadge({
   if (size === "compact") {
     return (
       <span
-        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium"
+        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium glass-panel"
         style={{ background: c.bg, color: c.color, border: `1px solid ${c.border}` }}
       >
         <span>{c.icon}</span>
@@ -77,7 +77,7 @@ export function StatusBadge({
 
   return (
     <div
-      className="rounded-xl px-4 py-3"
+      className="rounded-xl px-4 py-3 glass-panel"
       style={{ background: c.bg, border: `1px solid ${c.border}` }}
     >
       <div className="flex items-center gap-2">
@@ -138,7 +138,7 @@ export function StoryStep({
 }) {
   return (
     <div
-      className={`animate-fade-in rounded-2xl px-6 py-5 ${className}`}
+      className={`animate-fade-in card-3d glass-panel rounded-2xl px-6 py-5 ${className}`}
       style={{
         background: bgColor,
         border: `1px solid ${borderColor}`,
@@ -159,8 +159,8 @@ export function StoryStep({
         </div>
         {timestamp && (
           <span
-            className="shrink-0 rounded-full px-3 py-1 text-xs font-mono"
-            style={{ background: "var(--surface-2)", color: "var(--text-muted)" }}
+            className="shrink-0 rounded-full px-3 py-1 text-xs font-mono shadow-inner"
+            style={{ background: "rgba(39, 39, 42, 0.4)", color: "var(--text-muted)" }}
           >
             {timestamp}
           </span>
@@ -190,18 +190,18 @@ export function FailoverBanner({
 
   return (
     <div
-      className="animate-failover rounded-2xl px-6 py-6 border-2"
+      className="animate-failover card-3d glass-panel rounded-2xl px-6 py-6 border-2"
       style={{
-        background: "linear-gradient(135deg, rgba(249, 115, 22, 0.06) 0%, rgba(249, 115, 22, 0.12) 100%)",
+        background: "linear-gradient(135deg, rgba(249, 115, 22, 0.08) 0%, rgba(249, 115, 22, 0.15) 100%)",
         borderColor: "var(--orange)",
       }}
     >
       <div className="flex items-center gap-4">
-        <span className="text-4xl">🔄</span>
+        <span className="text-4xl" style={{ filter: "drop-shadow(0 0 10px rgba(249, 115, 22, 0.5))" }}>🔄</span>
         <div className="flex-1">
           <div
-            className="text-2xl font-bold tracking-tight"
-            style={{ color: "var(--orange)" }}
+            className="text-2xl font-bold tracking-tight text-gradient"
+            style={{ background: "linear-gradient(270deg, #f97316, #f59e0b, #f97316)" }}
           >
             Switched to backup AI model
           </div>
@@ -215,8 +215,8 @@ export function FailoverBanner({
         </div>
         {timestamp && (
           <span
-            className="shrink-0 rounded-full px-3 py-1 text-xs font-mono"
-            style={{ background: "var(--surface-2)", color: "var(--text-muted)" }}
+            className="shrink-0 rounded-full px-3 py-1 text-xs font-mono shadow-inner"
+            style={{ background: "rgba(39, 39, 42, 0.4)", color: "var(--text-muted)" }}
           >
             {timestamp}
           </span>
@@ -256,24 +256,26 @@ export function ReasoningCard({
 
   return (
     <div
-      className="animate-fade-in rounded-2xl px-6 py-6"
+      className="animate-fade-in card-3d glass-panel rounded-2xl px-6 py-6 relative overflow-hidden"
       style={{
-        background: "linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(99, 102, 241, 0.1) 100%)",
-        border: "1px solid rgba(99, 102, 241, 0.3)",
+        background: "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.2) 100%)",
+        border: "1px solid rgba(99, 102, 241, 0.4)",
+        boxShadow: "0 0 30px rgba(99, 102, 241, 0.15)",
       }}
     >
-      <div className="flex items-start gap-4">
-        <span className="mt-0.5 text-3xl shrink-0">🧠</span>
+      <div className="absolute -top-10 -right-10 w-40 h-40 bg-indigo-500 rounded-full blur-3xl opacity-20"></div>
+      <div className="flex items-start gap-4 relative z-10">
+        <span className="mt-0.5 text-3xl shrink-0" style={{ filter: "drop-shadow(0 0 8px rgba(99, 102, 241, 0.6))" }}>🧠</span>
         <div className="flex-1">
           <div className="flex items-center gap-3 flex-wrap">
             <span
               className="rounded-full px-4 py-1 text-sm font-bold uppercase tracking-wide"
-              style={{ background: `${stratColor}22`, color: stratColor }}
+              style={{ background: `${stratColor}33`, color: stratColor, boxShadow: `0 0 10px ${stratColor}44` }}
             >
               {friendlyStrategy}
             </span>
             <span className="text-sm" style={{ color: "var(--text-muted)" }}>
-              decided by <strong style={{ color: "var(--purple)" }}>{model}</strong> model
+              decided by <strong style={{ color: "var(--purple)", textShadow: "0 0 8px rgba(168, 85, 247, 0.5)" }}>{model}</strong> model
               {backoff != null && <> · waiting {backoff}s</>}
             </span>
           </div>
@@ -283,6 +285,7 @@ export function ReasoningCard({
               color: "var(--text)",
               borderLeft: "3px solid var(--accent)",
               paddingLeft: "16px",
+              boxShadow: "-4px 0 15px -4px rgba(99, 102, 241, 0.3)"
             }}
           >
             &ldquo;{reasoning}&rdquo;
@@ -295,8 +298,8 @@ export function ReasoningCard({
         </div>
         {timestamp && (
           <span
-            className="shrink-0 rounded-full px-3 py-1 text-xs font-mono"
-            style={{ background: "var(--surface-2)", color: "var(--text-muted)" }}
+            className="shrink-0 rounded-full px-3 py-1 text-xs font-mono shadow-inner"
+            style={{ background: "rgba(39, 39, 42, 0.4)", color: "var(--text-muted)" }}
           >
             {timestamp}
           </span>
@@ -337,14 +340,14 @@ export function EscalationBanner({
 }) {
   return (
     <div
-      className="animate-fade-in rounded-2xl px-6 py-6 border-2"
+      className="animate-fade-in card-3d glass-panel rounded-2xl px-6 py-6 border-2"
       style={{
-        background: "linear-gradient(135deg, rgba(113, 113, 122, 0.05) 0%, rgba(113, 113, 122, 0.1) 100%)",
+        background: "linear-gradient(135deg, rgba(113, 113, 122, 0.1) 0%, rgba(113, 113, 122, 0.2) 100%)",
         borderColor: "var(--text-muted)",
       }}
     >
       <div className="flex items-start gap-4">
-        <span className="text-3xl shrink-0">🙋</span>
+        <span className="text-3xl shrink-0" style={{ filter: "drop-shadow(0 0 10px rgba(113, 113, 122, 0.6))" }}>🙋</span>
         <div className="flex-1">
           <div className="text-xl font-bold" style={{ color: "var(--text)" }}>
             This step needs a human
@@ -359,8 +362,8 @@ export function EscalationBanner({
         </div>
         {timestamp && (
           <span
-            className="shrink-0 rounded-full px-3 py-1 text-xs font-mono"
-            style={{ background: "var(--surface-2)", color: "var(--text-muted)" }}
+            className="shrink-0 rounded-full px-3 py-1 text-xs font-mono shadow-inner"
+            style={{ background: "rgba(39, 39, 42, 0.4)", color: "var(--text-muted)" }}
           >
             {timestamp}
           </span>
@@ -394,18 +397,18 @@ export function CompletionBanner({
       : "Task completed successfully!"
     : "Task could not be completed";
   const color = success ? "var(--green)" : "var(--red)";
-  const bg = success ? "var(--green-bg)" : "var(--red-bg)";
-  const border = success ? "var(--green-border)" : "var(--red-border)";
+  const bg = success ? "rgba(34, 197, 94, 0.15)" : "rgba(239, 68, 68, 0.15)";
+  const border = success ? "rgba(34, 197, 94, 0.4)" : "rgba(239, 68, 68, 0.4)";
 
   return (
     <div
-      className="animate-fade-in rounded-2xl px-6 py-6 border-2"
-      style={{ background: bg, borderColor: border }}
+      className="animate-fade-in card-3d glass-panel rounded-2xl px-6 py-6 border-2"
+      style={{ background: bg, borderColor: border, boxShadow: `0 0 40px ${success ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)'}` }}
     >
       <div className="flex items-start gap-4">
-        <span className="text-4xl shrink-0">{icon}</span>
+        <span className="text-4xl shrink-0" style={{ filter: `drop-shadow(0 0 12px ${color})` }}>{icon}</span>
         <div className="flex-1">
-          <div className="text-2xl font-bold" style={{ color }}>
+          <div className="text-2xl font-bold" style={{ color, textShadow: `0 0 10px ${color}88` }}>
             {title}
           </div>
           {completedTools && completedTools.length > 0 && (
@@ -423,7 +426,7 @@ export function CompletionBanner({
           {degraded && (
             <span
               className="mt-3 inline-block rounded-full px-3 py-1 text-sm font-medium"
-              style={{ background: "var(--amber-bg)", color: "var(--amber)", border: `1px solid var(--amber-border)` }}
+              style={{ background: "rgba(245, 158, 11, 0.15)", color: "var(--amber)", border: `1px solid rgba(245, 158, 11, 0.4)` }}
             >
               ⚠️ Degraded — not all steps could run automatically
             </span>
@@ -431,8 +434,8 @@ export function CompletionBanner({
         </div>
         {timestamp && (
           <span
-            className="shrink-0 rounded-full px-3 py-1 text-xs font-mono"
-            style={{ background: "var(--surface-2)", color: "var(--text-muted)" }}
+            className="shrink-0 rounded-full px-3 py-1 text-xs font-mono shadow-inner"
+            style={{ background: "rgba(39, 39, 42, 0.4)", color: "var(--text-muted)" }}
           >
             {timestamp}
           </span>

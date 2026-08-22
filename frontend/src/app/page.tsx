@@ -56,13 +56,12 @@ export default function TaskViewPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 relative">
       {/* Hero header */}
-      <div className="flex items-end justify-between gap-4">
+      <div className="flex items-end justify-between gap-4 glass-panel p-6 rounded-2xl" style={{ background: "rgba(24, 24, 27, 0.4)", border: "1px solid rgba(63, 63, 70, 0.5)" }}>
         <div>
           <h1
-            className="text-4xl font-bold tracking-tight"
-            style={{ color: "var(--text)" }}
+            className="text-4xl font-bold tracking-tight text-gradient"
           >
             Live Demo
           </h1>
@@ -77,15 +76,15 @@ export default function TaskViewPage() {
         <div className="flex items-center gap-3 shrink-0">
           {taskId && connected && (
             <span className="flex items-center gap-1.5 text-sm" style={{ color: "var(--green)" }}>
-              <span className="animate-pulse-dot inline-block h-2 w-2 rounded-full bg-green-500" />
+              <span className="animate-pulse-dot inline-block h-2 w-2 rounded-full bg-green-500" style={{ filter: "drop-shadow(0 0 5px #22c55e)" }} />
               Live
             </span>
           )}
           <button
             onClick={handleStart}
             disabled={starting || (!!taskId && !isComplete)}
-            className="rounded-xl px-6 py-3 text-base font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:hover:scale-100"
-            style={{ background: "var(--accent)", color: "white" }}
+            className="btn-shiny rounded-xl px-8 py-4 text-lg font-bold transition-all hover:scale-[1.05] active:scale-[0.98] disabled:opacity-40 disabled:hover:scale-100 shadow-xl"
+            style={{ background: "var(--accent)", color: "white", boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.4)" }}
           >
             {starting
               ? "Starting…"
@@ -98,11 +97,13 @@ export default function TaskViewPage() {
 
       {/* Tool status bar */}
       {taskId && Object.keys(toolStates).length > 0 && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {Object.entries(TOOL_LABELS).map(([key, label]) => {
             const state = toolStates[key] || "HEALTHY";
             return (
-              <StatusBadge key={key} state={state} toolName={label} />
+              <div key={key} className="card-3d">
+                <StatusBadge state={state} toolName={label} />
+              </div>
             );
           })}
         </div>
@@ -110,7 +111,8 @@ export default function TaskViewPage() {
 
       {/* Event timeline — narrative cards */}
       {taskId && (
-        <div className="space-y-4">
+        <div className="relative space-y-6 pt-4 pl-4">
+          <div className="timeline-line"></div>
           {displayEvents.map((ev, i) => (
             <EventCard key={i} event={ev} />
           ))}
@@ -121,19 +123,19 @@ export default function TaskViewPage() {
       {/* Empty state */}
       {!taskId && (
         <div
-          className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed py-20"
-          style={{ borderColor: "var(--border-subtle)" }}
+          className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed py-24 glass-panel transition-all hover:border-indigo-500/50"
+          style={{ borderColor: "var(--border-subtle)", background: "rgba(24, 24, 27, 0.2)" }}
         >
-          <span className="text-5xl">⚡</span>
+          <span className="text-6xl mb-4" style={{ filter: "drop-shadow(0 0 20px rgba(255,255,255,0.2))" }}>⚡</span>
           <p
-            className="mt-4 text-xl font-medium"
-            style={{ color: "var(--text-secondary)" }}
+            className="mt-4 text-2xl font-bold"
+            style={{ color: "var(--text)" }}
           >
             Waiting for the agent to start…
           </p>
-          <p className="mt-2 text-base" style={{ color: "var(--text-muted)" }}>
-            Click <strong>Start Task</strong> above, then open the{" "}
-            <strong>Chaos Console</strong> to inject failures mid-run.
+          <p className="mt-2 text-lg text-center max-w-lg" style={{ color: "var(--text-muted)" }}>
+            Click <strong style={{ color: "var(--accent)" }}>Start Task</strong> above, then open the{" "}
+            <strong style={{ color: "var(--purple)" }}>Chaos Console</strong> to inject failures mid-run.
           </p>
         </div>
       )}
