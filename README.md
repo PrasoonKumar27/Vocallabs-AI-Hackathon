@@ -6,9 +6,10 @@
   **The ultimate resilience layer for AI agents.**  
   *Most "AI agent" demos assume every tool call succeeds — ours assumes the opposite.*
 
-  [![Frontend](https://img.shields.io/badge/Frontend-Live-blue?style=for-the-badge)](https://vocallabs-ai-hackathon.vercel.app/)
+  [![Frontend](https://img.shields.io/badge/Frontend-Live-blue?style=for-the-badge)](https://vocallabs-ai-hackathon-frontend.vercel.app/)
   [![Backend](https://img.shields.io/badge/Backend-Live-green?style=for-the-badge)](https://toolfall-backend-production.up.railway.app/)
   [![Pass Rate](https://img.shields.io/badge/Eval_Score-22%2F22_Passed-success?style=for-the-badge)](#evaluation-harness)
+  [![GitHub](https://img.shields.io/badge/GitHub-Repo-181717?style=for-the-badge)](https://github.com/PrasoonKumar27/Vocallabs-AI-Hackathon)
 
 </div>
 
@@ -18,10 +19,11 @@
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Project Links & Live Demo
 
-*   **Frontend (Interactive 3D Chaos Console):** [Vercel Deployment](https://vocallabs-ai-hackathon.vercel.app/)
-*   **Backend (FastAPI Engine):** [Railway Deployment](https://toolfall-backend-production.up.railway.app/)
+*   **GitHub Repository:** [https://github.com/PrasoonKumar27/Vocallabs-AI-Hackathon](https://github.com/PrasoonKumar27/Vocallabs-AI-Hackathon)
+*   **Frontend (Interactive 3D Chaos Console):** [https://vocallabs-ai-hackathon-frontend.vercel.app/](https://vocallabs-ai-hackathon-frontend.vercel.app/)
+*   **Backend (FastAPI Engine):** [https://toolfall-backend-production.up.railway.app/](https://toolfall-backend-production.up.railway.app/)
 
 *Tip: Open the Frontend link, click "Start Task", and use the Chaos Console to inject latency spikes, server crashes, and corrupt payloads in real-time. Watch the agent dynamically recover!*
 
